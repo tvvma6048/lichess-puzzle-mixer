@@ -1,0 +1,18 @@
+.devdata/
+.e2e-data/
+e2e/node_modules/
+e2e/test-results/
+e2e/playwright-report/
+e2e/blob-report/
+# Keep *-snapshots/ baselines in git; ignore Playwright diff output only
+e2e/**/*-snapshots/*-diff.png
+e2e/**/*-snapshots/*-actual.png
+node_modules/
+package-lock.json
+bin/
+__debug_bin*
+dist/
+*.exe
+
+# Go
+/vendor/

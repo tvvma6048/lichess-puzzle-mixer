@@ -1,0 +1,13 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/lichess-puzzle-mixer ."
+bin = "./tmp/lichess-puzzle-mixer"
+full_bin = "./tmp/lichess-puzzle-mixer --dev --data-dir ./.devdata --no-browser --port 7777"
+include_ext = ["go"]
+exclude_dir = ["tmp", "web", ".devdata", "bin", "dist"]
+delay = 300
+
+[log]
+time = false

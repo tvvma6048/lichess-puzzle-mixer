@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug lichess-puzzle-mixer (dev)",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}",
+      "args": [
+        "--dev",
+        "--data-dir",
+        "${workspaceFolder}/.devdata",
+        "--no-browser",
+        "--port",
+        "7777"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "GOROOT": "/home/dennyserejo/sdk/go",
+        "GOTOOLCHAIN": "local",
+        "PATH": "/home/dennyserejo/sdk/go/bin:/home/dennyserejo/go/bin:${env:PATH}"
+      }
+    }
+  ]
+}

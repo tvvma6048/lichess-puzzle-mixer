@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lichess Puzzle Mixer</title>
+    <link rel="stylesheet" href="/vendor/chessground.css" />
+    <link rel="stylesheet" href="/vendor/chessground.brown.css" />
+    <link rel="stylesheet" href="/vendor/chessground.cburnett.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/board.css" />
+  </head>
+  <body>
+    <!-- Step 1: filters -->
+    <div id="view-setup" class="view" data-testid="view-setup">
+      <main class="setup-main">
+        <header class="page-header">
+          <h1>Lichess Puzzle Mixer</h1>
+          <p class="subtitle">Step 1 — choose filters</p>
+        </header>
+
+        <div id="status" data-testid="api-status" class="status loading" aria-live="polite">
+          Checking API…
+        </div>
+
+
+        <section id="database-panel" class="database-panel" data-testid="database-panel">
+          <div class="database-panel-header">
+            <h2 class="section-title">Database</h2>
+            <button
+              type="button"
+              id="btn-toggle-database"
+              class="btn-link db-toggle"
+              data-testid="btn-toggle-database"
+              hidden
+              aria-expanded="false"
+              aria-controls="database-panel-body"
+            >
+              Show database
+            </button>
+          </div>
+          <div id="database-panel-body" class="database-panel-body" data-testid="database-panel-body">
+          <dl class="db-stats" data-testid="db-stats">
+            <div class="db-stat-row">
+              <dt>Status</dt>
+              <dd id="db-status-text" data-testid="db-status-text">—</dd>
+            </div>
+            <div class="db-stat-row">
+              <dt>Puzzles</dt>
+              <dd id="db-puzzle-count" data-testid="db-puzzle-count">—</dd>
+            </div>
+            <div class="db-stat-row">
+              <dt>Imported</dt>
+              <dd id="db-imported-at" data-testid="db-imported-at">—</dd>
+            </div>
+            <div class="db-stat-row">
+              <dt>File size</dt>
+              <dd id="db-file-size" data-testid="db-file-size">—</dd>
+            </div>
+            <div class="db-stat-row db-stat-row--path">
+              <dt>Location</dt>
+              <dd id="db-path" class="db-path" data-testid="db-path">—</dd>
+            </div>
+          </dl>
+          <p id="db-progress" class="db-progress" hidden data-testid="db-progress"></p>
+          <p id="db-message" class="db-message" data-testid="db-message"></p>
+          <div class="db-actions">
+            <button type="button" id="btn-import-sample" class="btn-secondary" data-testid="btn-import-sample">
+              Import sample (~500)
+            </button>
+            <label class="btn-secondary btn-file">
+              Upload CSV
+              <input type="file" id="input-import-csv" accept=".csv,.bz2" hidden data-testid="input-import-csv" />
+            </label>
+            <button type="button" id="btn-download-lichess" class="btn-secondary" data-testid="btn-download-lichess">
+              Download from Lichess
+            </button>
+            <button type="button" id="btn-delete-db" class="btn-danger" data-testid="btn-delete-db">
+              Delete database
+            </button>
+          </div>
+          </div>
+        </section>
+
+        <section id="filter-panel" class="filter-panel" hidden data-testid="filter-panel">
+          <form id="filter-form" class="filter-form">
+            <section class="field theme-filters" data-testid="theme-filters">
+              <label>Theme groups</label>
+              <p class="field-hint">
+                Inside each group, pick themes combined with <strong>or</strong>. Groups are combined with
+                <strong>and</strong> — e.g. (fork or pin) and short.
+              </p>
+              <div id="theme-groups" class="theme-groups" data-testid="theme-groups"></div>
+              <button
+                type="button"
+                id="btn-add-theme-group"
+                class="btn-secondary btn-add-theme-group"
+                data-testid="btn-add-theme-group"
+              >
+                + Add AND group
+              </button>
+            </section>
+            <div class="field-row">
+              <div class="field">
+                <label for="filter-rating-min">Rating min</label>
+                <select id="filter-rating-min" name="rating_min">
+                  <option value="0">0</option>
+                  <option value="1000">1000</option>
+                  <option value="1200">1200</option>
+                  <option value="1500">1500</option>
+                  <option value="1800">1800</option>
+                  <option value="2000">2000</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-rating-max">Rating max</label>
+                <select id="filter-rating-max" name="rating_max">
+                  <option value="4000">4000</option>
+                  <option value="2500">2500</option>
+                  <option value="2000">2000</option>
+                  <option value="1800">1800</option>
+                  <option value="1500">1500</option>
+                  <option value="1200">1200</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="filter-side">Side to move</label>
+                <select id="filter-side" name="side_to_move">
+                  <option value="any">Any</option>
+                  <option value="w">White</option>
+                  <option value="b">Black</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-popularity">Min popularity</label>
+                <select id="filter-popularity" name="popularity_min">
+                  <option value="-100">-100</option>
+                  <option value="0">0</option>
+                  <option value="50">50</option>
+                  <option value="80">80</option>
+                  <option value="90">90</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="filter-length-min">Length min</label>
+                <select id="filter-length-min" name="length_min">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-length-max">Length max</label>
+                <select id="filter-length-max" name="length_max">
+                  <option value="99">99</option>
+                  <option value="3">3</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-secondary" data-testid="filter-search">
+                Preview count
+              </button>
+              <button
+                type="button"
+                id="btn-start-training"
+                class="btn-primary"
+                data-testid="btn-start-training"
+              >
+                Start training →
+              </button>
+            </div>
+          </form>
+
+          <p id="match-count" class="match-count" data-testid="match-count"></p>
+          <p id="filter-error" class="filter-error" hidden data-testid="filter-error"></p>
+        </section>
+      </main>
+    </div>
+
+    <!-- Step 2: play -->
+    <div id="view-play" class="view view-play" hidden data-testid="view-play">
+      <header class="play-header">
+        <button type="button" id="btn-back-filters" class="btn-link" data-testid="btn-back-filters">
+          ← Filters
+        </button>
+        <span class="play-title">Lichess Puzzle Mixer</span>
+      </header>
+
+      <div class="play-layout">
+        <div class="play-board-col">
+          <div id="board" class="board-container" data-testid="board"></div>
+          <p id="play-status" class="play-status" data-testid="play-status">Loading…</p>
+          <p id="play-feedback" class="play-feedback" data-testid="play-feedback"></p>
+        </div>
+
+        <aside class="play-sidebar">
+          <div class="move-history-box">
+            <div class="move-history-scroll">
+              <table class="move-history" aria-label="Move history">
+                <tbody id="play-moves" data-testid="play-moves" hidden></tbody>
+              </table>
+            </div>
+            <div class="move-nav" data-testid="move-nav">
+              <button
+                type="button"
+                id="btn-restart"
+                class="move-nav-btn"
+                title="Restart puzzle"
+                aria-label="Restart puzzle"
+                disabled
+                data-testid="btn-restart"
+              >
+                ⏮
+              </button>
+              <button
+                type="button"
+                id="btn-prev"
+                class="move-nav-btn"
+                title="Previous move"
+                aria-label="Previous move"
+                disabled
+                data-testid="btn-prev"
+              >
+                ◀
+              </button>
+              <button
+                type="button"
+                id="btn-forward"
+                class="move-nav-btn"
+                title="Next move"
+                aria-label="Next move"
+                disabled
+                data-testid="btn-forward"
+              >
+                ▶
+              </button>
+              <button
+                type="button"
+                id="btn-last"
+                class="move-nav-btn"
+                title="Last move"
+                aria-label="Last move"
+                disabled
+                data-testid="btn-last"
+              >
+                ⏭
+              </button>
+            </div>
+          </div>
+          <div class="meta-box">
+            <button
+              type="button"
+              id="btn-toggle-play-meta"
+              class="btn-link meta-toggle"
+              data-testid="btn-toggle-play-meta"
+              aria-expanded="false"
+              aria-controls="play-meta"
+            >
+              Show rating &amp; themes
+            </button>
+            <div id="play-meta" class="play-meta play-meta--collapsed" data-testid="play-meta">
+              <div class="meta-row">
+                <span class="meta-label">Rating</span>
+                <span id="play-rating" class="meta-value" data-testid="play-rating">—</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Themes</span>
+                <span id="play-themes" class="meta-value meta-themes" data-testid="play-themes">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="lichess-links" data-testid="lichess-links">
+            <a
+              id="play-lichess-puzzle"
+              class="lichess-link"
+              href="https://lichess.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              hidden
+              data-testid="play-lichess-puzzle"
+              >Puzzle on Lichess</a
+            >
+            <a
+              id="play-lichess-game"
+              class="lichess-link lichess-link--secondary"
+              href="https://lichess.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              hidden
+              data-testid="play-lichess-game"
+              >Source game</a
+            >
+          </div>
+          <div class="play-help-actions">
+            <button
+              type="button"
+              id="btn-hint"
+              class="btn-secondary"
+              disabled
+              data-testid="btn-hint"
+            >
+              Get a hint
+            </button>
+            <button
+              type="button"
+              id="btn-solution"
+              class="btn-secondary"
+              disabled
+              data-testid="btn-solution"
+            >
+              View solution
+            </button>
+          </div>
+          <div class="play-actions">
+            <button type="button" id="btn-skip" class="btn-secondary">Skip</button>
+            <button type="button" id="btn-next" class="btn-primary" disabled data-testid="btn-next">
+              Next puzzle
+            </button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

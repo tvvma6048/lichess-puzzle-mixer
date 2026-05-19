@@ -1,0 +1,7 @@
+{
+  "go.goroot": "/home/dennyserejo/sdk/go",
+  "go.alternateTools": {
+    "go": "/home/dennyserejo/sdk/go/bin/go"
+  },
+  "go.toolsManagement.autoUpdate": true
+}

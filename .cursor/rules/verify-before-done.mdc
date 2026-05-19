@@ -1,0 +1,14 @@
+---
+description: Run make verify before claiming work is complete on this project
+alwaysApply: true
+---
+
+# Verification required
+
+After implementing or modifying code in this repo:
+
+1. Run `make verify` from the project root.
+2. Fix any failures before telling the user the task is done.
+3. For UI changes, ensure `e2e/smoke.spec.ts` still passes (uses `data-testid` selectors).
+
+See `AGENTS.md` for details on the test stack and partial commands.
