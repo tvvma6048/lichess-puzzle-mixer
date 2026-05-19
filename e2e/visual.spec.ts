@@ -11,7 +11,11 @@ test("home page success state matches baseline", async ({ page }) => {
     timeout: 10_000,
   });
 
-  await expect(page.locator(".setup-main")).toHaveScreenshot("home-success.png", {
+  // Screenshot theme filters only — database panel collapse/expand changes setup-main height on CI.
+  await expect(page.getByTestId("filter-panel")).toBeVisible();
+  await expect(page.getByTestId("theme-groups")).toBeVisible();
+
+  await expect(page.getByTestId("filter-panel")).toHaveScreenshot("home-success.png", {
     maxDiffPixelRatio: 0.02,
   });
 });
