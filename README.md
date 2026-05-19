@@ -194,14 +194,16 @@ make verify
 
 ## Creating a release (maintainers)
 
-Tag a version and push; GitHub Actions builds Linux, Windows, and macOS assets and attaches them to the release:
+1. Move `[Unreleased]` entries into a new `## [x.y.z] - YYYY-MM-DD` section in [CHANGELOG.md](CHANGELOG.md).
+2. Commit and push to `master`.
+3. Tag and push; GitHub Actions builds assets and publishes release notes from that changelog section:
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.1.2
+git push origin v0.1.2
 ```
 
-Or run the **Release** workflow manually from the Actions tab.
+Or run the **Release** workflow manually from the Actions tab (use the same tag name).
 
 ## Possible use cases
 

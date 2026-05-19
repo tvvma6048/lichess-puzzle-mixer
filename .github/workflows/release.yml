@@ -50,11 +50,20 @@ jobs:
           tar czf lichess-puzzle-mixer-macos-arm64.tar.gz lichess-puzzle-mixer-macos-arm64
           sha256sum lichess-puzzle-mixer-*.tar.gz lichess-puzzle-mixer-*.zip > SHA256SUMS
 
+      - name: Release notes from CHANGELOG.md
+        run: |
+          TAG="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}"
+          chmod +x scripts/release-notes.sh
+          scripts/release-notes.sh "$TAG" > dist/RELEASE_NOTES.md
+          echo "---" >> dist/RELEASE_NOTES.md
+          echo "" >> dist/RELEASE_NOTES.md
+          echo "**[Full changelog](https://github.com/${{ github.repository }}/blob/master/CHANGELOG.md)**" >> dist/RELEASE_NOTES.md
+
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
-          generate_release_notes: true
+          body_path: dist/RELEASE_NOTES.md
           files: |
             dist/lichess-puzzle-mixer-linux-amd64.tar.gz
             dist/lichess-puzzle-mixer-windows-amd64.zip

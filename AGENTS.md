@@ -45,6 +45,11 @@ E2E uses the **release** binary (embedded `web/`), not `--dev` mode. That matche
 - Sample puzzles: `testdata/lichess_sample.csv` (500 rows). Refresh with `make fetch-sample`.
 - Import locally: `make import-sample` (writes `./.devdata/puzzles.db`).
 
+## Creating a release
+
+1. Update [CHANGELOG.md](CHANGELOG.md): add `## [version] - date` and clear `[Unreleased]`.
+2. Commit, tag `v*`, push tag. The Release workflow uses `scripts/release-notes.sh` for the GitHub release body.
+
 ## Quick checks (partial)
 
 ```bash
