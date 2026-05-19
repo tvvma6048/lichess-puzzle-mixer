@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-19
+
+### Added
+
+- `scripts/release-notes.sh` — GitHub releases now use the matching section from `CHANGELOG.md` instead of empty auto-generated notes.
+
+### Changed
+
+- Release workflow publishes release body from `CHANGELOG.md` via `body_path`.
+- Maintainer docs: release checklist in README and AGENTS.md.
+
+### Fixed
+
+- CI `make verify`: use `CGO_ENABLED=0` for `go vet` / `go test` on Linux when Ayatana AppIndicator dev libraries are not installed (matches `make release` fallback).
+- CI visual regression test: snapshot a single theme-group card so font/wrapping differences on GitHub Actions do not fail the build.
+
 ## [0.1.1] - 2026-05-18
 
 ### Added
@@ -41,6 +57,7 @@ First public release ([`v0.1.0`](https://github.com/DSerejo/lichess-puzzle-mixer
 - CI (`make verify`: `go vet`, `go test`, release build, Playwright e2e).
 - GitHub release workflow with **Linux** and **Windows** amd64 binaries and `SHA256SUMS`.
 
-[Unreleased]: https://github.com/DSerejo/lichess-puzzle-mixer/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/DSerejo/lichess-puzzle-mixer/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/DSerejo/lichess-puzzle-mixer/releases/tag/v0.1.2
 [0.1.1]: https://github.com/DSerejo/lichess-puzzle-mixer/releases/tag/v0.1.1
 [0.1.0]: https://github.com/DSerejo/lichess-puzzle-mixer/releases/tag/v0.1.0
