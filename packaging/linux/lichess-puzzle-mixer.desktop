@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Lichess Puzzle Mixer
+GenericName=Chess puzzle trainer
+Comment=Offline Lichess puzzles with combined theme filters
+Exec=@EXEC@
+Icon=lichess-puzzle-mixer
+Categories=Game;BoardGame;
+Keywords=chess;lichess;puzzle;tactics;trainer;
+StartupNotify=true
+Terminal=false

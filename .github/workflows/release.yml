@@ -33,12 +33,22 @@ jobs:
         run: |
           CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o dist/lichess-puzzle-mixer-windows-amd64.exe .
 
+      - name: Build macOS (Intel)
+        run: |
+          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o dist/lichess-puzzle-mixer-macos-amd64 .
+
+      - name: Build macOS (Apple Silicon)
+        run: |
+          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o dist/lichess-puzzle-mixer-macos-arm64 .
+
       - name: Package archives
         run: |
           cd dist
           tar czf lichess-puzzle-mixer-linux-amd64.tar.gz lichess-puzzle-mixer-linux-amd64
           zip -q lichess-puzzle-mixer-windows-amd64.zip lichess-puzzle-mixer-windows-amd64.exe
-          sha256sum lichess-puzzle-mixer-linux-amd64.tar.gz lichess-puzzle-mixer-windows-amd64.zip > SHA256SUMS
+          tar czf lichess-puzzle-mixer-macos-amd64.tar.gz lichess-puzzle-mixer-macos-amd64
+          tar czf lichess-puzzle-mixer-macos-arm64.tar.gz lichess-puzzle-mixer-macos-arm64
+          sha256sum lichess-puzzle-mixer-*.tar.gz lichess-puzzle-mixer-*.zip > SHA256SUMS
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
@@ -48,6 +58,8 @@ jobs:
           files: |
             dist/lichess-puzzle-mixer-linux-amd64.tar.gz
             dist/lichess-puzzle-mixer-windows-amd64.zip
+            dist/lichess-puzzle-mixer-macos-amd64.tar.gz
+            dist/lichess-puzzle-mixer-macos-arm64.tar.gz
             dist/SHA256SUMS
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Lichess Puzzle Mixer">
+  <rect width="128" height="128" rx="24" fill="#81b64c"/>
+  <path fill="#fff" d="M64 28c-8 0-14 5-16 12-2 6 0 12 4 16-6 2-10 8-10 15 0 9 7 16 16 16h12c9 0 16-7 16-16 0-7-4-13-10-15 4-4 6-10 4-16-2-7-8-12-16-12zm-6 52v8h12v-8H58zm0 14v10h12V94H58z"/>
+  <circle cx="88" cy="40" r="10" fill="#262421" opacity="0.25"/>
+  <circle cx="40" cy="88" r="8" fill="#262421" opacity="0.2"/>
+</svg>

@@ -7,6 +7,9 @@ const dataDir = path.join(root, ".e2e-data");
 
 export default defineConfig({
   testDir: ".",
+  testIgnore: process.env.CAPTURE_README_ASSETS
+    ? []
+    : ["**/capture-readme-assets.spec.ts"],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

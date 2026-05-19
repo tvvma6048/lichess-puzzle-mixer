@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -17,6 +18,7 @@ import (
 	"github.com/DSerejo/lichess-puzzle-mixer/internal/db"
 	"github.com/DSerejo/lichess-puzzle-mixer/internal/paths"
 	"github.com/DSerejo/lichess-puzzle-mixer/internal/server"
+	"github.com/DSerejo/lichess-puzzle-mixer/internal/tray"
 )
 
 func main() {
@@ -109,11 +111,29 @@ func main() {
 		}
 	}
 
+	var shutdownOnce sync.Once
+	shutdownCh := make(chan struct{})
+	requestShutdown := func() {
+		shutdownOnce.Do(func() { close(shutdownCh) })
+	}
+
+	if tray.Available() {
+		slog.Info("system tray active — use Quit in the tray menu to exit")
+		go tray.Run(url, requestShutdown)
+	} else {
+		slog.Info("running without system tray; press Ctrl+C in the terminal to quit", "url", url)
+	}
+
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	<-ctx.Done()
+
+	select {
+	case <-ctx.Done():
+	case <-shutdownCh:
+	}
 
 	slog.Info("shutting down")
+	tray.Quit()
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_ = httpServer.Shutdown(shutdownCtx)

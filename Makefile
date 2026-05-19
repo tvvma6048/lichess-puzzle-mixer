@@ -1,6 +1,6 @@
 GO ?= go
 
-.PHONY: dev build release release-windows release-all run-release test verify e2e import-sample fetch-sample
+.PHONY: dev build release release-windows release-all run-release test verify e2e import-sample fetch-sample install-desktop
 
 LDFLAGS_RELEASE = -s -w
 DIST = dist
@@ -23,9 +23,21 @@ build: check-go
 	$(GO) build -o bin/lichess-puzzle-mixer .
 
 # Release binary: embedded web assets, stripped symbols (~smaller).
+# On Linux, enables CGO for the system tray (libayatana-appindicator3-dev).
 release: check-go
 	@mkdir -p bin
-	$(GO) build -ldflags="$(LDFLAGS_RELEASE)" -o bin/lichess-puzzle-mixer .
+	@if [ "$$(uname -s)" = "Linux" ]; then \
+		if pkg-config --exists ayatana-appindicator3-0.1 2>/dev/null \
+		   || pkg-config --exists appindicator3-0.1 2>/dev/null; then \
+			CGO_ENABLED=1 $(GO) build -ldflags="$(LDFLAGS_RELEASE)" -o bin/lichess-puzzle-mixer .; \
+		else \
+			echo "Note: install libayatana-appindicator3-dev for the system tray icon."; \
+			echo "  sudo apt install libayatana-appindicator3-dev gcc pkg-config"; \
+			CGO_ENABLED=0 $(GO) build -ldflags="$(LDFLAGS_RELEASE)" -o bin/lichess-puzzle-mixer .; \
+		fi; \
+	else \
+		CGO_ENABLED=0 $(GO) build -ldflags="$(LDFLAGS_RELEASE)" -o bin/lichess-puzzle-mixer .; \
+	fi
 
 # Windows amd64 from Linux/macOS (no CGO in this project).
 release-windows: check-go
@@ -39,6 +51,11 @@ release-all: check-go
 run-release: release
 	./bin/lichess-puzzle-mixer --data-dir ./.devdata --port 7777
 
+# Linux app menu entry (~/.local/share/applications). Search "Lichess Puzzle Mixer" after install.
+install-desktop: release
+	@chmod +x scripts/install-desktop.sh
+	./scripts/install-desktop.sh
+
 test: check-go
 	$(GO) vet ./...
 	$(GO) test ./...
@@ -49,6 +66,11 @@ import-sample: check-go
 fetch-sample:
 	@chmod +x scripts/fetch-sample.sh
 	./scripts/fetch-sample.sh
+
+readme-images: release
+	@./bin/lichess-puzzle-mixer --import-csv testdata/lichess_sample.csv --data-dir ./.e2e-data --import-only
+	@cd e2e && npm install --no-fund --no-audit && npx playwright install chromium
+	cd e2e && CAPTURE_README_ASSETS=1 npx playwright test capture-readme-assets
 
 verify:
 	@chmod +x scripts/verify.sh

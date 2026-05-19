@@ -9,14 +9,31 @@ Inspired by [offline-chess-puzzles](https://github.com/brianch/offline-chess-puz
 
 Thanks to Lichess for the puzzle dump, and to [chessground](https://github.com/lichess-org/chessground) and [chess.js](https://github.com/jhlywa/chess.js) for the board and rules.
 
+## Screenshots
+
+Theme groups combine with **OR** inside each row and **AND** between rows — e.g. `(fork or pin) and short`:
+
+![Theme filter setup with grouped OR/AND themes and a match preview](docs/images/filters.png)
+
+Solve puzzles in the browser with hints, move history, and links back to Lichess:
+
+![Puzzle board with sidebar controls](docs/images/board.png)
+
+![Short demo: set filters, preview count, then train](docs/images/demo.gif)
+
+Regenerate these assets after UI changes: `make readme-images` (requires `ffmpeg` for the GIF).
+
 ## Download
 
-Pre-built binaries are on the **[Releases](https://github.com/DSerejo/lichess-puzzle-mixer/releases/latest)** page:
+Pre-built binaries are on the **[Releases](https://github.com/DSerejo/lichess-puzzle-mixer/releases/latest)** page. Version history: [CHANGELOG.md](CHANGELOG.md).
+
 
 | Platform | File |
 |----------|------|
 | Linux (64-bit) | `lichess-puzzle-mixer-linux-amd64.tar.gz` |
 | Windows (64-bit) | `lichess-puzzle-mixer-windows-amd64.zip` |
+| macOS (Intel) | `lichess-puzzle-mixer-macos-amd64.tar.gz` |
+| macOS (Apple Silicon) | `lichess-puzzle-mixer-macos-arm64.tar.gz` |
 
 Each archive contains a single executable. Extract it, then run it — your browser should open automatically.
 
@@ -31,6 +48,16 @@ chmod +x lichess-puzzle-mixer-linux-amd64
 **Windows**
 
 Unzip `lichess-puzzle-mixer-windows-amd64.zip` and double-click `lichess-puzzle-mixer-windows-amd64.exe`, or run it from a terminal. Windows may show a SmartScreen prompt the first time; choose “More info” → “Run anyway” if you trust this build.
+
+**macOS**
+
+```bash
+tar xzf lichess-puzzle-mixer-macos-arm64.tar.gz   # or macos-amd64 on Intel Macs
+xattr -cr lichess-puzzle-mixer-macos-arm64        # clear quarantine after download
+./lichess-puzzle-mixer-macos-arm64
+```
+
+Build on a Mac with menu-bar tray support: `go build -o lichess-puzzle-mixer .` (requires Xcode command-line tools for CGO).
 
 ## First run
 
@@ -77,6 +104,46 @@ Wrong moves are rejected; when you finish the line, the next puzzle loads after 
 - **Source game preamble** in the history (when Lichess provides a game URL)
 - **Links** to the puzzle and original game on Lichess
 - Single static binary; no Node, Rust, or Python required to run releases
+
+## Linux app menu (Pop!_OS, Ubuntu, Fedora, etc.)
+
+After building or downloading the binary, register a launcher so it appears when you press Super and search for apps:
+
+```bash
+make release
+make install-desktop
+```
+
+This installs `~/.local/bin/lichess-puzzle-mixer` and a **Lichess Puzzle Mixer** entry in your application list.
+
+While the app runs, look for its icon in the **system tray** (near the clock). Right-click for **Open in browser** or **Quit**. Build with tray support on Linux:
+
+```bash
+sudo apt install libayatana-appindicator3-dev gcc pkg-config
+make release
+make install-desktop
+```
+
+On GNOME / Pop!_OS, install and enable the **AppIndicator** extension if the tray icon is missing:
+
+```bash
+sudo apt install gnome-shell-extension-appindicator
+# Log out and back in, then enable "AppIndicator" in Extensions
+```
+
+To remove the launcher later:
+
+```bash
+rm -f ~/.local/bin/lichess-puzzle-mixer \
+  ~/.local/share/applications/lichess-puzzle-mixer.desktop \
+  ~/.local/share/icons/hicolor/scalable/apps/lichess-puzzle-mixer.svg
+```
+
+If you installed the binary from a release tarball instead of `make release`, point the installer at it:
+
+```bash
+BIN_SRC=/path/to/lichess-puzzle-mixer ./scripts/install-desktop.sh
+```
 
 ## Data folder
 
@@ -127,7 +194,7 @@ make verify
 
 ## Creating a release (maintainers)
 
-Tag a version and push; GitHub Actions builds Linux and Windows assets and attaches them to the release:
+Tag a version and push; GitHub Actions builds Linux, Windows, and macOS assets and attaches them to the release:
 
 ```bash
 git tag v0.1.0
