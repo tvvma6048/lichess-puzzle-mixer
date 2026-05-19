@@ -18,11 +18,22 @@ if [[ -s "${NVM_DIR}/nvm.sh" ]]; then
   . "${NVM_DIR}/nvm.sh"
 fi
 
+# Linux tray needs Ayatana dev libs; match Makefile release fallback when absent.
+go_vet_test() {
+  if [[ "$(uname -s)" = "Linux" ]] \
+     && ! pkg-config --exists ayatana-appindicator3-0.1 2>/dev/null \
+     && ! pkg-config --exists appindicator3-0.1 2>/dev/null; then
+    CGO_ENABLED=0 go "$@"
+  else
+    go "$@"
+  fi
+}
+
 echo "==> go vet"
-go vet ./...
+go_vet_test vet ./...
 
 echo "==> go test"
-go test ./...
+go_vet_test test ./...
 
 echo "==> release build"
 make release
