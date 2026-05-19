@@ -8,7 +8,7 @@ e2e/blob-report/
 e2e/**/*-snapshots/*-diff.png
 e2e/**/*-snapshots/*-actual.png
 node_modules/
-package-lock.json
+/package-lock.json
 bin/
 __debug_bin*
 dist/
