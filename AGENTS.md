@@ -29,7 +29,7 @@ E2E uses the **release** binary (embedded `web/`), not `--dev` mode. That matche
 
 ### Visual (screenshot) tests
 
-`e2e/visual.spec.ts` compares the success-state UI to committed PNG baselines.
+`e2e/visual.spec.ts` compares a single theme-group card to a committed PNG baseline (avoids font-dependent hint wrapping in CI).
 
 - **Intentional UI change:** update baselines:
   ```bash
